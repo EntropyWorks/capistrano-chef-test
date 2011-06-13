@@ -1,0 +1,6 @@
+{
+  "chef_server": {
+    "server_url": "http://chef.example.com:4000"
+  },
+  "run_list": [ "recipe[chef-server::rubygems-install]" ]
+}

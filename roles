@@ -1,0 +1,14 @@
+# For every machine there needs to be a role added.
+#
+# To make it easier just modify your ~/.ssh/config
+# 
+#    Host ya-cs
+#    User ubuntu
+#    Hostname [ replace-with-valid-hostname ].compute.amazonaws.com
+#    IdentitiesOnly yes
+#    IdentityFile ~/.ssh/[aws-generated-private-key].pem
+#
+role(:c_server) { "test-chef-server" }
+role(:c_client) { "test-chef-client-01" }
+role(:c_client) { "test-chef-client-02" }
+

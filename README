@@ -1,0 +1,16 @@
+The goal is to make deploying a chef-server on ubuntu as repeatable as possible.
+
+This is a Capistrano base deployment. https://github.com/capistrano/capistrano/wiki 
+
+Done:
+
+ * Install rvm to manage ruby and its gems
+ * Install chef under rvm cleanly 
+ * Fix init.d scripts for chef to work with rvm
+ 
+Need to do:
+ 
+ * Add servers as clients to chef via Capistrano
+ * Setup apache to proxy chef webgui
+ * Change default webgui password during deployment
+ * Deploy an apache test site besides chef 

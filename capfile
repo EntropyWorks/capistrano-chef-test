@@ -1,0 +1,28 @@
+$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
+require "rvm/capistrano"
+set :rvm_ruby_string, '1.9.2'
+set :rvm_type, :root
+
+# Change this if your not using this account for your login
+set :user_home_dir, '/home/ubuntu'
+
+# change user if your not using ubuntu
+set :ssh_options, { :user => 'ubuntu', :port => 22 } 
+ssh_options[:keys] = [File.join(ENV["HOME"], ".ssh", "ops.pem")] 
+ssh_options[:forward_agent] = true
+
+set :use_sudo, true
+default_run_options[:pty] = true
+
+set :default_environment, {
+  'PATH' => "/usr/local/rvm/gems/ruby-1.9.2-p180/bin:/usr/local/rvm/gems/ruby-1.9.2-p180@global/bin:/usr/local/rvm/rubies/ruby-1.9.2-p180/bin:/usr/local/rvm/bin:$PATH",
+  'RUBY_VERSION' => 'ruby 1.9.2',
+  'GEM_HOME'     => '/usr/local/rvm/gems/ruby-1.9.2-p180',
+  'GEM_PATH'     => '/usr/local/rvm/gems/ruby-1.9.2-p180:/usr/local/rvm/gems/ruby-1.9.2-p180@global',
+  'BUNDLE_PATH'  => '/usr/local/rvm/gems/ruby-1.9.2-p180'  # If you are using bundler.
+}
+
+load 'roles'
+load 'default.rb'
+load 'ruby/default.rb'
+load 'servers/default.rb'
