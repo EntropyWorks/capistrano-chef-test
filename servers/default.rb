@@ -1,7 +1,7 @@
 namespace :servers do
   desc "Set hostname" # Makes life easier when your hoping around trying to fix things
   task :hostname do
-    run "#{sudo} hostname $CAPISTRANO:HOST$ ; #{sudo} perl -i -p -e s'/localhost$/localhost\ $CAPISTRANO:HOST$/'  /etc/hosts"
+    run "#{sudo} hostname $CAPISTRANO:HOST$ ; #{sudo} perl -i -p -e s'/ localhost.*$/ localhost\ $CAPISTRANO:HOST$/'  /etc/hosts"
   end
   desc "Upgrade Ubuntu"
   task :upgrade  do
