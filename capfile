@@ -5,6 +5,7 @@ set :rvm_type, :root
 
 # Change this if your not using this account for your login
 set :user_home_dir, '/home/ubuntu'
+set :webui_admin_password, 'You-Should-Change-This-Now'
 
 # change user if your not using ubuntu
 set :ssh_options, { :user => 'ubuntu', :port => 22 } 

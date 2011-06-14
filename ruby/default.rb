@@ -15,7 +15,7 @@ namespace :ruby do
   namespace :chef do
     desc "Required chef base" 
     task :base , :roles=> :c_client do
-      run "#{sudo} mkdir -p /etc/chef ; mkdir -p #{user_home_dir}cap-files/etc/chef"
+      run "#{sudo} mkdir -p /etc/chef ; mkdir -p #{user_home_dir}/cap-files/etc/chef"
       run "GEM_PATH=\"$(rvm gemdir)\" GEM_HOME=\"$(rvm gemdir)\" gem install chef --version=0.10 --no-ri --no-rdoc"
       run "GEM_PATH=\"$(rvm gemdir)\" GEM_HOME=\"$(rvm gemdir)\" gem install ohai --no-ri --no-rdoc"
       upload "./ruby/files/chef/install-chef.sh", "#{user_home_dir}/cap-files/install-chef.sh"
@@ -23,10 +23,17 @@ namespace :ruby do
       upload "./ruby/files/chef/solo.rb", "#{user_home_dir}/cap-files/etc/chef/solo.rb"
       run "#{sudo} cp #{user_home_dir}/cap-files/etc/chef/solo.rb /etc/chef"
     end
+    desc "Create server.rb configuration file"
+    task :create_conf, :roles => :c_server do
+      template = File.read(File.join(File.dirname(__FILE__), "./files/chef/server.rb.erb"))
+      buffer   = ERB.new(template).result(binding)
+      put buffer, "#{user_home_dir}/cap-files/etc/chef/server.rb"
+    end
     desc "Install chef server"
     task :server , :roles=> :c_server do
       ruby.chef.base # Run the chef base setup
-      run "#{sudo}mkdir -p /var/chef/{nodes,openid/store,openid/cstore,search_index,roles,cookbooks,site-cookbooks
+      # Need to verify what the ownership of these directories needs to be.
+      run "#{sudo} mkdir -p /var/chef/{nodes,openid/store,openid/cstore,search_index,roles,cookbooks,site-cookbooks}"
       upload "./ruby/files/chef/chef-server.json", "#{user_home_dir}/cap-files/chef-server.json"
       run "ln -sf #{user_home_dir}/cap-files/chef-server.json /tmp/chef.json"
       run "#{sudo} #{user_home_dir}/cap-files/install-chef.sh" # sudo required this
