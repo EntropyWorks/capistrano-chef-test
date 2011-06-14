@@ -26,10 +26,14 @@ namespace :ruby do
     desc "Install chef server"
     task :server , :roles=> :c_server do
       ruby.chef.base # Run the chef base setup
+      run "#{sudo}mkdir -p /var/chef/{nodes,openid/store,openid/cstore,search_index,roles,cookbooks,site-cookbooks
       upload "./ruby/files/chef/chef-server.json", "#{user_home_dir}/cap-files/chef-server.json"
       run "ln -sf #{user_home_dir}/cap-files/chef-server.json /tmp/chef.json"
       run "#{sudo} #{user_home_dir}/cap-files/install-chef.sh" # sudo required this
       servers.init # Fix the init.d scripts that are missing the path to rvm ruby
+      run "sudo rabbitmqctl add_vhost /chef"
+      run "sudo rabbitmqctl add_user chef testing"
+      run "sudo rabbitmqctl set_permissions -p /chef chef \".*\" \".*\" \".*\""
     end
     desc "Install chef client"
     task :client , :roles=> :c_client do
