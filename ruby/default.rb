@@ -3,10 +3,13 @@
 #
 namespace :ruby do
   desc "Install rvm for ubuntu user"
-  task :rvm , :roles=> :c_client do
-    server.bash # Setup bash to work with rvm
+  task :rvm do
     upload "./ruby/files/setup-rvm.sh", "#{user_home_dir}/cap-files/bin/setup-rvm.sh"
-    run "chmod 755  #{user_home_dir}/cap-files/bin/setup-rvm.sh ; #{sudo} #{user_home_dir}/cap-files/bin/setup-rvm.sh"
+    run "chmod 755  #{user_home_dir}/cap-files/bin/setup-rvm.sh"
+    run "#{sudo} #{user_home_dir}/cap-files/bin/setup-rvm.sh"
+    servers.bash # Setup bash to work with rvm
+    run "#{sudo} #{user_home_dir}/cap-files/bin/setup-rvm.sh"
+    servers.bash # Setup bash to work with rvm
     run "rvm install 1.9.2"
     run "rvm --default use 1.9.2"
     run "ruby --version"
@@ -14,7 +17,7 @@ namespace :ruby do
   end
   namespace :chef do
     desc "Required chef base" 
-    task :base , :roles=> :c_client do
+    task :base do
       run "#{sudo} mkdir -p /etc/chef ; mkdir -p #{user_home_dir}/cap-files/etc/chef"
       run "GEM_PATH=\"$(rvm gemdir)\" GEM_HOME=\"$(rvm gemdir)\" gem install chef --version=0.10 --no-ri --no-rdoc"
       run "GEM_PATH=\"$(rvm gemdir)\" GEM_HOME=\"$(rvm gemdir)\" gem install ohai --no-ri --no-rdoc"
