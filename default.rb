@@ -2,10 +2,11 @@
 #
 namespace :chef_client do
   desc "Make your chef clients"
-  task :doit do
+  task :doit , :roles=> :c_client do
     servers.hostname
     servers.upgrade
     servers.build
+    ruby.rvm
     ruby.rvm
     ruby.chef.client
   end
@@ -14,10 +15,11 @@ end
 #
 namespace :chef_server do
   desc "Make your chef server"
-  task :doit do
-    servers.hostname
+  task :doit , :roles=> :c_server do
+    servers.hostname 
     servers.upgrade
     servers.build
+    ruby.rvm
     ruby.rvm
     ruby.chef.server
   end
