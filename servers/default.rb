@@ -62,3 +62,21 @@ namespace :servers do
     run "sudo cp #{user_home_dir}/cap-files/etc/init.d/chef-solr  /etc/init.d/chef-solr"
   end
 end
+
+namespace :ubuntu do
+  desc "Install chef ubuntu packages"
+  task :chef, :roles=> :c_client do
+    run "echo \"deb http://apt.opscode.com/ `lsb_release -cs`-0.10 main\" > /tmp/opscode.list"
+    run "#{sudo} cp /tmp/opscode.list /etc/apt/sources.list.d"
+    run "mkdir -p #{user_home_dir}/cap-files/etc/chef"
+    run "wget -qO - http://apt.opscode.com/packages@opscode.com.gpg.key | sudo apt-key add - "
+      template = File.read(File.join(File.dirname(__FILE__), "./files/etc/chef/server.rb.erb"))
+      buffer   = ERB.new(template).result(binding)
+      put buffer, "#{user_home_dir}/cap-files/etc/chef/server.rb"
+    run "#{sudo} mkdir -p /etc/chef" 
+    run "#{sudo} cp #{user_home_dir}/cap-files/etc/chef/server.rb /etc/chef/server.rb"
+    run "#{sudo} apt-get update"
+    run "#{sudo} apt-get -y upgrade"
+    run "#{sudo} apt-get -y install chef"
+  end
+end
