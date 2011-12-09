@@ -4,16 +4,20 @@
 namespace :ruby do
   desc "Install rvm for ubuntu user"
   task :rvm do
+    run "mkdir -p #{user_home_dir}/cap-files/bin"
     upload "./ruby/files/setup-rvm.sh", "#{user_home_dir}/cap-files/bin/setup-rvm.sh"
     run "chmod 755  #{user_home_dir}/cap-files/bin/setup-rvm.sh"
     run "#{sudo} #{user_home_dir}/cap-files/bin/setup-rvm.sh"
     servers.bash # Setup bash to work with rvm
     run "#{sudo} #{user_home_dir}/cap-files/bin/setup-rvm.sh"
     servers.bash # Setup bash to work with rvm
-    run "rvm install 1.9.2"
-    run "rvm --default use 1.9.2"
+    run "PATH=\"/usr/local/rvm/gems/ruby-1.9.2-p180/bin:/usr/local/rvm/gems/ruby-1.9.2-p180@global/bin:/usr/local/rvm/rubies/ruby-1.9.2-p180/bin:/usr/local/rvm/bin:$PATH\" \
+      GEM_PATH=\"$(rvm gemdir)\" GEM_HOME=\"$(rvm gemdir)\" rvm install 1.9.2"
+    run "PATH=\"/usr/local/rvm/gems/ruby-1.9.2-p180/bin:/usr/local/rvm/gems/ruby-1.9.2-p180@global/bin:/usr/local/rvm/rubies/ruby-1.9.2-p180/bin:/usr/local/rvm/bin:$PATH\" \
+      GEM_PATH=\"$(rvm gemdir)\" GEM_HOME=\"$(rvm gemdir)\" rvm --default use 1.9.2"
     run "ruby --version"
-    run "GEM_PATH=\"$(rvm gemdir)\" GEM_HOME=\"$(rvm gemdir)\" rvm rubygems current"
+    run "PATH=\"/usr/local/rvm/gems/ruby-1.9.2-p180/bin:/usr/local/rvm/gems/ruby-1.9.2-p180@global/bin:/usr/local/rvm/rubies/ruby-1.9.2-p180/bin:/usr/local/rvm/bin:$PATH\" \
+      GEM_PATH=\"$(rvm gemdir)\" GEM_HOME=\"$(rvm gemdir)\" rvm rubygems current"
   end
   namespace :chef do
     desc "Required chef base" 
@@ -42,7 +46,7 @@ namespace :ruby do
       run "#{sudo} #{user_home_dir}/cap-files/install-chef.sh" # sudo required this
       servers.init # Fix the init.d scripts that are missing the path to rvm ruby
       run "sudo rabbitmqctl add_vhost /chef"
-      run "sudo rabbitmqctl add_user chef testing"
+      drun "sudo rabbitmqctl add_user chef testing"
       run "sudo rabbitmqctl set_permissions -p /chef chef \".*\" \".*\" \".*\""
     end
     desc "Install chef client"

@@ -9,6 +9,6 @@
 #    IdentityFile ~/.ssh/[aws-generated-private-key].pem
 #
 role(:c_server) { "test-chef-server" }
-role(:c_client) { "test-chef-client-01" }
+#role(:c_client) { "test-chef-client-01" }
 role(:c_client) { "test-chef-client-02" }
 
